@@ -1,23 +1,40 @@
 <?php
-// api/Core/Http/Request.php
+
 namespace App\Core\Http;
 
 class Request {
-    public array $get;
-    public array $post;
-    public array $server;
+    private array $data;
 
     public function __construct() {
-        $this->get = $_GET;
-        $this->post = $_POST;
-        $this->server = $_SERVER;
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+        if (stripos($contentType, 'application/json') !== false) {
+            $raw = file_get_contents("php://input");
+            $decoded = json_decode($raw, true);
+            $this->data = is_array($decoded) ? $decoded : [];
+        } else {
+            // fallback to standard $_POST or $_GET
+            $this->data = $_POST ?: $_GET;
+        }
     }
 
-    public function input(string $key, $default = null) {
-        return $this->post[$key] ?? $this->get[$key] ?? $default;
-    }
-
+    /**
+     * Get all request data
+     *
+     * @return array
+     */
     public function all(): array {
-        return array_merge($this->get, $this->post);
+        return $this->data;
+    }
+
+    /**
+     * Get specific key
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get(string $key, mixed $default = null): mixed {
+        return $this->data[$key] ?? $default;
     }
 }

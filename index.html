@@ -102,7 +102,7 @@
         }
 
         try {
-            const res = await fetch('/index.php/login', {
+            const res = await fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -110,7 +110,10 @@
                     username: !identifier.includes('@') ? identifier : undefined,
                     password: password
                 })
+
             });
+
+
 
             const data = await res.json();
 
@@ -118,12 +121,12 @@
                 message.style.color = 'green';
                 message.textContent = 'Login successful!';
                 localStorage.setItem('token', data.token);
-                // window.location.href = '/dashboard.html'; // Redirect if needed
             } else {
                 message.textContent = data.message || 'Login failed';
             }
+
         } catch (err) {
-            message.textContent = 'Something went wrong. Try again.';
+            message.textContent = 'Something went wrong. Try again.' + err.message;
             console.error(err);
         }
     });

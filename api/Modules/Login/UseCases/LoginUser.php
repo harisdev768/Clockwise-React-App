@@ -2,7 +2,6 @@
 namespace App\Modules\Login\UseCases;
 
 use App\Modules\Login\Services\JWTService;
-
 use App\Modules\Login\Services\UserService;
 
 
@@ -14,10 +13,6 @@ class LoginUser {
         $this->userService = $userService;
         $this->jwtService = $jwtService;
         
-    }
-
-    public static function create(UserService $userService, JWTService $jwtService): self {
-        return new self($userService, $jwtService);
     }
 
     public function execute(array $data): array {
@@ -44,7 +39,7 @@ class LoginUser {
 
             return [
                 'success' => true,
-                'message' => 'Login successful',
+                'message' => 'Login successfulsss',
                 'user_id' => $user->getId(),
                 'token' => $token
             ];

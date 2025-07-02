@@ -10,14 +10,9 @@ class DB {
         try {
             $pdo = new PDO('mysql:host=localhost;dbname=clockwise', 'admin_u_rw', 'Loc@lhost');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//            echo 'DB CONNECTED!<br>';
             return $pdo;
         } catch (PDOException $e) {
             die("Database connection failed: " . $e->getMessage());
         }
     }
 }
-
-//singleton pattern
-
-//dependencies injection

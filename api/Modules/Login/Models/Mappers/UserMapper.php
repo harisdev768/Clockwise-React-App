@@ -12,10 +12,6 @@ class UserMapper {
 
     public function __construct(\PDO $pdo) {
         $this->pdo = $pdo;
-//        echo "<br>user mapper - UserMapper.php<br>";
-    }
-    public static function create(PDO $pdo): self {
-        return new self($pdo);
     }
 
     public function findById(int $id): ?User {
