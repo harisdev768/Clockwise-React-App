@@ -27,11 +27,32 @@ class LoginController {
 
         $response = $this->loginUser->execute($data);
 
+
+        if($response['success'] && isset($response['token']) ) {
+            setcookie(
+                'jwt',          // Cookie name
+                $response['token'],                // JWT token
+                [
+                    'expires' => time() + 3600,       // 1 hour
+                    'path' => '/',
+                    'domain' => 'localhost',   //  'clockwise.local' for index.html
+                    'secure' => false,               // Set to true if using HTTPS
+                    'httponly' => true,
+                    'samesite' => 'Lax',           // or 'None' with secure
+                ]
+            );
+        }
+
+    //        echo json_encode(['success' => true, 'message' => 'Logged in']);
+
+
         header('Content-Type: application/json');
         echo json_encode($response);
         exit;
     }
 
 
+    public function tauth(): void {
 
+    }
 }

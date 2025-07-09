@@ -3,16 +3,18 @@ namespace App\Modules\Login\UseCases;
 
 use App\Modules\Login\Services\JWTService;
 use App\Modules\Login\Services\UserService;
+use App\Modules\Login\Models\Mappers\UserTokenMapper;
 
 
 class LoginUser {
     private UserService $userService;
     private JWTService $jwtService;
+    private UserTokenMapper $tokenMapper;
 
-    public function __construct(UserService $userService, JWTService $jwtService) {
+    public function __construct(UserService $userService, JWTService $jwtService , UserTokenMapper $tokenMapper) {
         $this->userService = $userService;
         $this->jwtService = $jwtService;
-        
+        $this->tokenMapper = $tokenMapper;
     }
 
     public function execute(array $data): array {
@@ -30,16 +32,18 @@ class LoginUser {
 
         if ($user) {
             $payload = [
+                'name' => $user->getFirstName().' '.$user->getLastName(),
                 'user_id' => $user->getId(),
                 'email' => $user->getEmail(),
                 'role' => $user->getRole()
             ];
 
             $token = $this->jwtService->generateToken($payload);
+            $this->tokenMapper->saveToken($user->getId(), $token);
 
             return [
                 'success' => true,
-                'message' => 'Login successfulsss',
+                'message' => 'Login successful!',
                 'user_id' => $user->getId(),
                 'token' => $token
             ];

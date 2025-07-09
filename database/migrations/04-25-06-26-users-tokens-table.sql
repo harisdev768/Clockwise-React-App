@@ -2,7 +2,7 @@ USE clockwise;
 
 CREATE TABLE IF NOT EXISTS user_tokens (
     token_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL UNIQUE,
     jwt_token VARCHAR(255),
     issued_at DATETIME,
     expires_at DATETIME,

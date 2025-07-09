@@ -15,6 +15,7 @@
             justify-content: center;
             min-height: 100vh;
             color: #333;
+            flex-direction: column;
         }
 
         .login-box {
@@ -23,7 +24,7 @@
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 340px;
         }
 
         .login-box h2 {
@@ -73,12 +74,23 @@
             font-size: 14px;
             font-weight: 500;
         }
+
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            text-align: center;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
-<div class="login-box">
-    <h2>Login</h2>
-    <form id="loginForm">
+
+<div class="login-box" id="login-box" style="display: none;">
+    <center>
+    <img class="logo img-fluid" src="https://gillanesolutions.net/haris/wp-content/uploads/2025/07/logo-cw.png" height="80">
+    </center>
+
+    <form id="loginForm" >
         <input name="identifier" type="text" id="identifier" placeholder="Email or Username" required>
         <input type="password" name="password" id="password" placeholder="Password" required>
         <button type="submit">Login</button>
@@ -86,7 +98,34 @@
     </form>
 </div>
 
+<pre id="output"></pre>
+
 <script>
+    async function checkLoginStatus() {
+        try {
+            const res = await fetch('http://clockwise.local/me', {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('output').textContent = `✅ Logged in as: ${data.user.name || 'User ID: ' + data.user.user_id}`;
+            } else {
+                document.getElementById('login-box').style.display = 'block';
+                document.getElementById('output').textContent = '';
+            }
+        } catch (err) {
+            console.error('Check login failed:', err);
+            document.getElementById('login-box').style.display = 'block';
+            document.getElementById('output').textContent = '';
+        }
+    }
+
+    window.onload = checkLoginStatus;
+
     document.getElementById('loginForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
@@ -102,34 +141,44 @@
         }
 
         try {
-            const res = await fetch('/login', {
+            const res = await fetch('http://clockwise.local/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
                     email: identifier.includes('@') ? identifier : undefined,
                     username: !identifier.includes('@') ? identifier : undefined,
                     password: password
                 })
-
             });
-
-
 
             const data = await res.json();
 
             if (data.success) {
                 message.style.color = 'green';
                 message.textContent = 'Login successful!';
-                localStorage.setItem('token', data.token);
+                await checkLoginStatus(); // 🔁 refresh UI after login
             } else {
                 message.textContent = data.message || 'Login failed';
             }
 
         } catch (err) {
-            message.textContent = 'Something went wrong. Try again.' + err.message;
-            console.error(err);
+            message.textContent = 'Something went wrong. Try again.' ;
+            console.error(err.message);
         }
     });
+
+    async function logout() {
+        const res = await fetch('/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            window.location.href = '/index.html';
+        }
+    }
 </script>
 </body>
 </html>

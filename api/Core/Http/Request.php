@@ -37,4 +37,11 @@ class Request {
     public function get(string $key, mixed $default = null): mixed {
         return $this->data[$key] ?? $default;
     }
+
+    /**
+     * Get entire body (alias for all)
+     */
+    public function getBody(): array {
+        return $this->data;
+    }
 }

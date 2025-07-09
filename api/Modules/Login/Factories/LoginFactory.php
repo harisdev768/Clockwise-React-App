@@ -1,20 +1,23 @@
 <?php
-// api/modules/login/Factories/LoginFactory.php
 namespace App\Modules\Login\Factories;
 
-use App\Config\DB;
-use App\Modules\Login\Models\Mappers\UserMapper;
-use App\Modules\Login\Services\UserService;
-use App\Modules\Login\UseCases\LoginUser;
+use App\Config\Container;
+use App\Modules\Login\Controllers\LoginController;
+
 
 class LoginFactory {
-    public static function createLoginUser(): LoginUser {
-        $pdo = DB::getConnection(); // Singleton or static PDO
+    private Container $container;
 
-        $userMapper = new UserMapper($pdo);
-        $userService = new UserService($userMapper);
-        $loginUser = new LoginUser($userService);
+    public function __construct(Container $container) {
+        $this->container = $container;
+    }
 
-        return $loginUser;
+    public function handleRequest(): void {
+        header('Content-Type: application/json');
+            $controller = $this->container->get(LoginController::class);
+            $response = $controller->login();
+            echo json_encode($response);
+            exit;
+
     }
 }
