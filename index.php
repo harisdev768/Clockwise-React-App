@@ -9,8 +9,9 @@ use App\Modules\Login\Services\JWTService;
 use App\Modules\Login\Models\Mappers\UserTokenMapper;
 use App\Modules\Login\Models\Mappers\UserMapper;
 
-use App\Modules\ForgotPassword\Controllers\ForgotPasswordController;
-use App\Modules\ForgotPassword\Controllers\ResetPasswordController;
+use App\Modules\ForgotPassword\Factories\ForgotPasswordFactory;
+use App\Modules\ForgotPassword\Factories\ResetPasswordFactory;
+
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -37,7 +38,10 @@ $container->bind(JWTService::class, fn() => new JWTService());
 $container->bind(LoginFactory::class, fn() => new LoginFactory($container));
 $container->bind(UserTokenMapper::class, new UserTokenMapper(DB::getConnection()));
 $container->bind(UserMapper::class, fn() => new UserMapper(DB::getConnection()));
-$container->bind(ForgotPasswordFactory::class, fn() => new ForgotPasswordFactory(new Request()));
+
+$container->bind(ForgotPasswordFactory::class, fn() => new ForgotPasswordFactory($container));
+$container->bind(ResetPasswordFactory::class, fn() => new ResetPasswordFactory($container));
+
 
 // Create and register routes
 $router = new Router();
@@ -70,13 +74,13 @@ $router->add('GET', '/me', function () use ($container) {
 });
 
 $router->add('POST', '/forgot-password', function () use ($container) {
-    $controller = $container->get(ForgotPasswordController::class);
-    $controller->handleRequest();
+   $factory = $container->get(ForgotPasswordFactory::class);
+   $factory->handler();
 });
 
 $router->add('POST', '/reset-password', function () use ($container) {
-    $controller = $container->get(ResetPasswordController::class);
-    $controller->handleRequest();
+    $factory = $container->get(ResetPasswordFactory::class);
+    $factory->handler();
 });
 
 // Run dispatcher
