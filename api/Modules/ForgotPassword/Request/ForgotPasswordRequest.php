@@ -1,11 +1,16 @@
 <?php
 
-namespace App\Core\Http;
+namespace App\Modules\ForgotPassword\Request;
 
-class Request {
+
+
+    class ForgotPasswordRequest{
     private array $data;
 
-    public function __construct() {
+    private string $email;
+
+    public function __construct()
+    {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
         if (stripos($contentType, 'application/json') !== false) {
@@ -16,16 +21,18 @@ class Request {
             // fallback to standard $_POST or $_GET
             $this->data = $_POST ?: $_GET;
         }
+        $this->email = $this->data['email'] ?? null;
     }
 
     //Get all request data
-    public function all(): array {
+    public function all(): array
+    {
         return $this->data;
     }
 
-    //Get specific key
-    public function get(string $key, mixed $default = null): mixed {
-        return $this->data[$key] ?? $default;
+    public function getEmail(){
+        return $this->email;
     }
+
 
 }

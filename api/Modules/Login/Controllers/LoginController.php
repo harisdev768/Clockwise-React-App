@@ -1,34 +1,35 @@
 <?php
 namespace App\Modules\Login\Controllers;
 
-use App\Modules\Login\UseCases\LoginUser;
-use App\Core\Http\Request;
+use App\Core\Http\Response;
+use App\Modules\Login\UseCases\LoginUseCase;
+use App\Modules\Login\Requests\LoginRequest;
+use App\Modules\Login\Response\LoginResponse;
 
 class LoginController {
-    private LoginUser $loginUser;
-    private Request $request;
+    private LoginUseCase $loginUseCase;
+    private LoginRequest $request;
 
-    public function __construct(LoginUser $loginUser, Request $request) {
-        $this->loginUser = $loginUser;
+    public function __construct(LoginUseCase $loginUseCase, LoginRequest $request) {
+        $this->loginUseCase = $loginUseCase;
         $this->request = $request;
     }
 
-    public function login(): void {
-        $data = $this->request->all();
+    public function login() {
 
-        if ((!isset($data['email']) && !isset($data['username'])) || !isset($data['password'])) {
-            http_response_code(400);
-            echo json_encode([
-                'success' => false,
-                'message' => 'Email/username and password are required'
-            ]);
-            exit;
+        $email = $this->request->getEmail();
+        $username = $this->request->getUsername();
+        $password = $this->request->getPassword();
+
+        if ((empty($email) && empty($username)) || empty($password)) {
+            return Response::unauthorized('Email or username and password are required');
         }
 
-        $response = $this->loginUser->execute($data);
 
+        $response = $this->loginUseCase->execute($email, $username, $password);
 
-        if($response['success'] && isset($response['token']) ) {
+        // Use loging resoponse success with response
+        if($response['success'] && isset($response['token'])){
             setcookie(
                 'jwt',          // Cookie name
                 $response['token'],                // JWT token
@@ -41,18 +42,13 @@ class LoginController {
                     'samesite' => 'Lax',           // or 'None' with secure
                 ]
             );
+            return LoginResponse::success([
+                    'user_id' => $response['user_id'],
+                    'token' => $response['token'] ?? null
+                ]);
+        }else{
+            return Response::unauthorized('Invalid email or password');
         }
-
-    //        echo json_encode(['success' => true, 'message' => 'Logged in']);
-
-
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        exit;
     }
 
-
-    public function tauth(): void {
-
-    }
 }

@@ -1,11 +1,11 @@
 <?php
-// Modules/ForgotPassword-2/Controllers/ResetPasswordController.php
-
 namespace App\Modules\ForgotPassword\Controllers;
 
-use App\Core\Http\Request;
 
+use App\Core\Http\Request;
+use App\Modules\ForgotPassword\Request\ResetPasswordRequest;
 use App\Modules\ForgotPassword\Services\ResetPasswordService;
+use App\Modules\ForgotPassword\Response\ResetPasswordResponse;
 
 class ResetPasswordController {
     private ResetPasswordService $service;
@@ -15,15 +15,14 @@ class ResetPasswordController {
     }
 
     public function handleRequest() {
-        $request = new Request();
-        $body = $request->getBody();
 
-        $token = trim($body['token'] ?? '');
-        $newPassword = trim($body['new_password'] ?? '');
+        $request = new ResetPasswordRequest();
+
+        $token = trim(($request->getToken()) ?? '');
+        $newPassword = trim(($request->getNewPassword()) ?? '');
 
         if (!$token || !$newPassword) {
-            echo json_encode(['success' => false, 'message' => 'Token and new password are required.']);
-            return;
+            return ResetPasswordResponse::inputRequired("Token and new password are required.");
         }
 
         $this->service->resetPassword($token, $newPassword);

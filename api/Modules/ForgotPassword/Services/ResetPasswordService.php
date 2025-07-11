@@ -3,6 +3,7 @@
 
 namespace App\Modules\ForgotPassword\Services;
 
+use App\Modules\ForgotPassword\Response\ResetPasswordResponse;
 use App\Modules\Login\Models\Mappers\UserMapper;
 use App\Modules\ForgotPassword\Mappers\PasswordResetMapper;
 use DateTime;
@@ -16,18 +17,17 @@ class ResetPasswordService {
         $this->resetMapper = $resetMapper;
     }
 
-    public function resetPassword(string $token, string $newPassword): void {
+    public function resetPassword(string $token, string $newPassword){
         $reset = $this->resetMapper->findByToken($token);
 
         if (!$reset || new DateTime() > new DateTime($reset['expires_at'])) {
-            echo json_encode(['success' => false, 'message' => 'Token is invalid or expired.']);
-            return;
+            return ResetPasswordResponse::unauthorized("Token is invalid or expired.");
         }
 
         $hashed = password_hash($newPassword, PASSWORD_BCRYPT);
         $this->userMapper->updatePasswordByEmail($reset['email'], $hashed);
         $this->resetMapper->deleteToken($token);
 
-        echo json_encode(['success' => true, 'message' => 'Password reset successful.']);
+        return ResetPasswordResponse::success("Password reset successful.");
     }
 }

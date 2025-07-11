@@ -11,13 +11,9 @@ class LoginFactory {
     public function __construct(Container $container) {
         $this->container = $container;
     }
-
+    
     public function handleRequest(): void {
-        header('Content-Type: application/json');
-            $controller = $this->container->get(LoginController::class);
-            $response = $controller->login();
-            echo json_encode($response);
-            exit;
-
+        $controller = $this->container->get(LoginController::class);
+        $controller->login(); // handles response directly
     }
 }

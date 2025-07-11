@@ -3,36 +3,24 @@
 namespace App\Modules\Login\Factories;
 
 use App\Config\Container;
-use App\Modules\Login\Services\JWTService;
+use App\Modules\Login\Controllers\JWTController;
 
 
 class JWTFactory
 {
-    private static Container $container;
-    private static array $decoded = [];
+    private Container $container;
 
-    public function __construct(Container $container) {
-        $this->$container = $container;
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
     }
 
 
-    public static function handle(string $token){
-        $token = $_COOKIE['jwt'] ?? null;
-        if (!$token)
-        {
-            echo json_encode(['success' => false, 'message' => 'Not authenticated']);
-            exit;
-        }
+    public function handleJWT()
+    {
+        $controller = $this->container->get(JWTController::class);
+        $controller->authenticate(); //validate call to controller
 
-        $jwtService = $container->get(JWTService::class);
-        $decoded = $jwtService->validateToken($token);
-
-        if ($decoded) {
-            echo json_encode(['success' => true, 'user' => $decoded]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
-        }
-        exit;
-        }
 
     }
+}

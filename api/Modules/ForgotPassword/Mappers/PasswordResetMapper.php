@@ -1,5 +1,4 @@
 <?php
-// Modules/ForgotPassword-2/Mappers/PasswordResetMapper.php
 
 namespace App\Modules\ForgotPassword\Mappers;
 

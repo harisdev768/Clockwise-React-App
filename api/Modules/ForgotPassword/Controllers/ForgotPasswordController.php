@@ -2,9 +2,10 @@
 
 namespace App\Modules\ForgotPassword\Controllers;
 
-use App\Core\Http\Request;
-use App\Modules\ForgotPassword\Services\ForgotPasswordService;
 
+use App\Modules\ForgotPassword\Request\ForgotPasswordRequest;
+use App\Modules\ForgotPassword\Services\ForgotPasswordService;
+use App\Modules\ForgotPassword\Response\ForgotPasswordResponse;
 
 class ForgotPasswordController {
     private ForgotPasswordService $service;
@@ -14,13 +15,13 @@ class ForgotPasswordController {
     }
 
     public function handleRequest() {
-        $request = new Request();
-        $body = $request->getBody();
-        $email = trim($body['email'] ?? '');
+
+        $request = new ForgotPasswordRequest();
+
+        $email = trim(($request->getEmail()) ?? '');
 
         if (empty($email)) {
-            echo json_encode(['success' => false, 'message' => 'Email is required.']);
-            return;
+            return ForgotPasswordResponse::unauthorized("Email is required.");
         }
 
         $this->service->sendResetEmail($email);

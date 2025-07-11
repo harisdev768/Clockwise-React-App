@@ -15,4 +15,7 @@ class ForgotPasswordFactory{
         $controller = $this->container->get(ForgotPasswordController::class);
         $controller->handleRequest();
     }
+
+
+
 }

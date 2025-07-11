@@ -1,29 +1,19 @@
 <?php
 namespace App\Modules\Login\Controllers;
 
-use App\Modules\Login\Services\JWTService;
+use App\Modules\Login\UseCases\ValidateToken;
 
 class JWTController {
-    private JWTService $jwtService;
+    private ValidateToken $useCase;
 
-    public function __construct(JWTService $jwtService) {
-        $this->jwtService = $jwtService;
+    public function __construct(ValidateToken $useCase) {
+        $this->useCase = $useCase;
     }
 
-    public function authenticate(): void {
+    public function authenticate(){
         $token = $_COOKIE['jwt'] ?? null;
 
-        if (!$token) {
-            echo json_encode(['success' => false, 'message' => 'Not authenticated']);
-            return;
-        }
+        $this->useCase->verify($token);
 
-        $decoded = $this->jwtService->validateToken($token);
-
-        if ($decoded) {
-            echo json_encode(['success' => true, 'user' => $decoded]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid token']);
-        }
     }
 }

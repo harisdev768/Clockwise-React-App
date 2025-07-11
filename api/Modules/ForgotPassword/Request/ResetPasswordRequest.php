@@ -1,11 +1,17 @@
 <?php
+namespace App\Modules\ForgotPassword\Request;
 
-namespace App\Core\Http;
 
-class Request {
+class ResetPasswordRequest
+{
     private array $data;
+    private string $token;
+    private string $newPassword;
 
-    public function __construct() {
+
+
+    public function __construct()
+    {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
         if (stripos($contentType, 'application/json') !== false) {
@@ -16,16 +22,20 @@ class Request {
             // fallback to standard $_POST or $_GET
             $this->data = $_POST ?: $_GET;
         }
+        $this->token = $this->data['token'] ?? '';
+        $this->newPassword = $this->data['new_password'] ?? '';
     }
 
     //Get all request data
-    public function all(): array {
+    public function all(): array
+    {
         return $this->data;
     }
 
-    //Get specific key
-    public function get(string $key, mixed $default = null): mixed {
-        return $this->data[$key] ?? $default;
+    public function getToken(): string{
+        return $this->token;
     }
-
+    public function getNewPassword(): string{
+        return $this->newPassword;
+    }
 }

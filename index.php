@@ -2,15 +2,18 @@
 use App\Config\Container;
 use App\Config\DB;
 use App\Core\Http\Request;
+use App\Core\Http\Response;
 use App\Core\Http\Router;
 
 use App\Modules\Login\Factories\LoginFactory;
-use App\Modules\Login\Services\JWTService;
-use App\Modules\Login\Models\Mappers\UserTokenMapper;
-use App\Modules\Login\Models\Mappers\UserMapper;
-
+use App\Modules\Login\Factories\JWTFactory;
 use App\Modules\ForgotPassword\Factories\ForgotPasswordFactory;
 use App\Modules\ForgotPassword\Factories\ResetPasswordFactory;
+
+
+use App\Modules\Login\Models\Mappers\UserTokenMapper;
+use App\Modules\Login\Models\Mappers\UserMapper;
+use App\Modules\Login\Services\JWTService;
 
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -41,10 +44,12 @@ $container->bind(UserMapper::class, fn() => new UserMapper(DB::getConnection()))
 
 $container->bind(ForgotPasswordFactory::class, fn() => new ForgotPasswordFactory($container));
 $container->bind(ResetPasswordFactory::class, fn() => new ResetPasswordFactory($container));
+$container->bind(JWTFactory::class, fn() => new JWTFactory($container));
+
 
 
 // Create and register routes
-$router = new Router();
+$router = new Router(); // routes.config.php
 
 $router->add('POST', '/login', function () use ($container) {
     $factory = $container->get(LoginFactory::class);
@@ -53,24 +58,12 @@ $router->add('POST', '/login', function () use ($container) {
 
 $router->add('POST', '/logout', function () {
     setcookie('jwt', '', time() - 3600, '/', '', true, true);
-    echo json_encode(['success' => true, 'message' => 'Logged out']);
+    return Response::logout();
 });
 
 $router->add('GET', '/me', function () use ($container) {
-    $token = $_COOKIE['jwt'] ?? null;
-    if (!$token) {
-        echo json_encode(['success' => false, 'message' => 'Not authenticated']);
-        return;
-    }
-
-    $jwtService = $container->get(JWTService::class);
-    $decoded = $jwtService->validateToken($token);
-
-    echo json_encode([
-        'success' => $decoded ? true : false,
-        'message' => $decoded ? 'Authenticated' : 'Invalid token',
-        'user' => $decoded
-    ]);
+    $factory = $container->get(JWTFactory::class);
+    $factory->handleJWT();
 });
 
 $router->add('POST', '/forgot-password', function () use ($container) {

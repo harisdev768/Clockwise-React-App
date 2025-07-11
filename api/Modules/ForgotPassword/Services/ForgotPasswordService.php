@@ -3,6 +3,7 @@
 
 namespace App\Modules\ForgotPassword\Services;
 
+use App\Modules\ForgotPassword\Response\ForgotPasswordResponse;
 use App\Modules\Login\Models\Mappers\UserMapper;
 use App\Modules\ForgotPassword\Mappers\PasswordResetMapper;
 use App\Modules\ForgotPassword\Utilities\Mailer;
@@ -19,12 +20,13 @@ class ForgotPasswordService {
         $this->mailer = $mailer;
     }
 
-    public function sendResetEmail(string $email): void {
+    public function sendResetEmail(string $email) {
+
+
         $user = $this->userMapper->findByEmail($email);
 
         if (!$user) {
-            echo json_encode(['success' => true, 'message' => "If your email is registered, you'll receive a reset link."]);
-            return;
+            return ForgotPasswordResponse::invalidEmail("If your email is registered, you will receive a reset link.");
         }
 
         $token = bin2hex(random_bytes(32));
@@ -33,6 +35,6 @@ class ForgotPasswordService {
 
         $this->mailer->sendResetLink($email, $token);
 
-        echo json_encode(['success' => true, 'message' => 'Reset link has been emailed.']);
+        return ForgotPasswordResponse::success("Reset link has been emailed.");
     }
 }
