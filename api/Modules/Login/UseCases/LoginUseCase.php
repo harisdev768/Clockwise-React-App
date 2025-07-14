@@ -1,11 +1,14 @@
 <?php
 namespace App\Modules\Login\UseCases;
 
-use App\Core\Http\Response;
+
+use App\Modules\Login\Requests\LoginRequest;
+use App\Modules\Login\Response\LoginResponse;
 use App\Modules\Login\Services\JWTService;
 use App\Modules\Login\Services\LoginUserService;
 use App\Modules\Login\Models\Mappers\UserTokenMapper;
 
+use App\Modules\Login\Exceptions\LoginException;
 
 class LoginUseCase {
     private LoginUserService $userService;
@@ -18,10 +21,13 @@ class LoginUseCase {
         $this->tokenMapper = $tokenMapper;
     }
 
-    public function execute(string $email, string $username , string $password): array {
-        $identifier = $email ?? $username ?? null;
+    public function execute(LoginRequest $request): array {
 
-        $user = $this->userService->login($identifier, $password);
+
+        $identifier = $request->getEmail();
+        $password = $request->getPassword();
+
+        $user = $this->userService->login($identifier,$password);
 
         if ($user) {
             $payload = [
@@ -34,17 +40,10 @@ class LoginUseCase {
             $token = $this->jwtService->generateToken($payload);
             $this->tokenMapper->saveToken($user->getId(), $token);
 
-            return [
-                'success' => true,
-                'message' => 'Login successful!',
-                'user_id' => $user->getId(),
-                'token' => $token ?? ''
-            ];
+            return LoginResponse::success($user->getId(),"Login successful!" , $token );
         }
 
-        return [
-            'success' => false,
-            'message' => 'Invalid credentials'
-        ];
+        throw LoginException::unauthorized();
+
     }
 }

@@ -12,14 +12,19 @@ class LoginResponse {
         exit;
     }
 
-    public static function success(array $userData, string $message = 'Login successful'): void
+    public static function success(int $userData, string $message , string $token): void
     {
-//        print_r($userData);
         self::json([
             'success' => true,
             'message' => $message,
-            'user_id' => $userData['user_id'] ?? null,
-            'token' => $userData['token'] ?? null
+            'user_id' => $userData ?? null,
+            'token' => $token ?? null
+        ], 200);
+    }
+    public static function error(string $message): void{
+        self::json([
+            'success' => false,
+            'message' => $message
         ], 200);
     }
 }

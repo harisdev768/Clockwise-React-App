@@ -5,9 +5,9 @@ class User {
     private ?int $id = null;
     private string $firstName;
     private string $lastName;
-    private string $email;
-    private string $username;
-    private string $password;
+    private string $email = '';    // Initialize with an empty string
+    private string $password = ''; // Initialize with an empty string
+    private string $username = ''; // Initialize with an empty string
     private int $roleId;
     private string $createdAt;
     private ?UserRole $role = null;

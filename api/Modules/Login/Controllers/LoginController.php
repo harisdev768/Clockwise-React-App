@@ -6,29 +6,18 @@ use App\Modules\Login\UseCases\LoginUseCase;
 use App\Modules\Login\Requests\LoginRequest;
 use App\Modules\Login\Response\LoginResponse;
 
+
+use App\Modules\Login\Exceptions\LoginException;
+
 class LoginController {
     private LoginUseCase $loginUseCase;
-    private LoginRequest $request;
 
-    public function __construct(LoginUseCase $loginUseCase, LoginRequest $request) {
+    public function __construct(LoginUseCase $loginUseCase) {
         $this->loginUseCase = $loginUseCase;
-        $this->request = $request;
     }
 
-    public function login() {
-
-        $email = $this->request->getEmail();
-        $username = $this->request->getUsername();
-        $password = $this->request->getPassword();
-
-        if ((empty($email) && empty($username)) || empty($password)) {
-            return Response::unauthorized('Email or username and password are required');
-        }
-
-
-        $response = $this->loginUseCase->execute($email, $username, $password);
-
-        // Use loging resoponse success with response
+    public function login(array $data) {
+        $response = $this->loginUseCase->execute(new LoginRequest($data['email'], $data['password']));
         if($response['success'] && isset($response['token'])){
             setcookie(
                 'jwt',          // Cookie name
@@ -42,12 +31,15 @@ class LoginController {
                     'samesite' => 'Lax',           // or 'None' with secure
                 ]
             );
+            //success response
             return LoginResponse::success([
                     'user_id' => $response['user_id'],
                     'token' => $response['token'] ?? null
                 ]);
         }else{
-            return Response::unauthorized('Invalid email or password');
+            //return Response::unauthorized('Invalid email or password');
+            throw LoginException::missingCredentials();
+
         }
     }
 

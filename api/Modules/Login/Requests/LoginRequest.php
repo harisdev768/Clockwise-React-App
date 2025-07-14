@@ -1,43 +1,43 @@
 <?php
 namespace App\Modules\Login\Requests;
 
+use App\Core\Http\Request;
+
 class LoginRequest {
+
+
     private array $data;
-    private string $email;
     private string $password;
-    private string $username;
+    private string $email;
 
-    public function __construct()
+    private Request $request;
+
+    public function __construct($email, $password)
     {
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-
-        if (stripos($contentType, 'application/json') !== false) {
-            $raw = file_get_contents("php://input");
-            $decoded = json_decode($raw, true);
-            $this->data = is_array($decoded) ? $decoded : [];
-        } else {
-            $this->data = $_POST ?: $_GET;
-        }
-
-        // Assign values from the input array
-        $this->email = $this->data['email'] ?? '';
-        $this->password = $this->data['password'] ?? '';
-        $this->username = $this->data['username'] ?? '';
+        $this->email = $email;
+        $this->password = $password;
     }
 
-    public function getEmail(): string { //username datatype
+
+    public function getEmail(){
         return $this->email;
     }
+    public function getEmailString(): string{
+        return (string) $this->email;
+    }
 
-    public function getPassword(): string {
+    public function getPassword() {
         return $this->password;
     }
-
-    public function getUsername(): string {
-        return $this->username;
+    public function getPasswordString(): string{
+        return (string) $this->password;
     }
 
-    public function all(): array {
-        return $this->data;
+    public function serialize(): array {
+        return [
+            'email' => $this->email,
+            'password' => $this->password
+        ];
     }
+
 }

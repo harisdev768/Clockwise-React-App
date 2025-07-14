@@ -12,7 +12,9 @@ class LoginUserService {
     }
 
     public function login(string $identifier, string $password): ?User {
+
         $user = $this->userMapper->findByEmail($identifier);
+
         if (!$user) {
             $user = $this->userMapper->findByUserName($identifier);
         }
