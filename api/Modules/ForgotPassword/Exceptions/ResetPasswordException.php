@@ -1,9 +1,9 @@
 <?php
-namespace App\Modules\Login\Exceptions;
+namespace App\Modules\ForgotPassword\Exceptions;
 
 use Exception;
 
-class LoginException extends Exception
+class ResetPasswordException extends Exception
 {
     protected int $statusCode;
 
@@ -31,15 +31,9 @@ class LoginException extends Exception
 
     public static function missingCredentials(): self
     {
-        return new self("Email and password are required", 422);
+        return new self("Token and new password are required", 422);
     }
-
-    public static function unauthorized(): self
-    {
-        return new self("Invalid email or password", 401);
-    }
-
-    public static function notFound(): self{
-        return new self("User Object Not Found", 404);
+    public static function tokenExpired(): self{
+        return new self("Token is invalid or expired. Please try again.", 400);
     }
 }

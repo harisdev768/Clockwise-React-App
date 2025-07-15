@@ -3,6 +3,7 @@
 
 namespace App\Modules\ForgotPassword\Services;
 
+use App\Modules\ForgotPassword\Exceptions\ResetPasswordException;
 use App\Modules\ForgotPassword\Response\ResetPasswordResponse;
 use App\Modules\Login\Models\Mappers\UserMapper;
 use App\Modules\ForgotPassword\Mappers\PasswordResetMapper;
@@ -21,7 +22,7 @@ class ResetPasswordService {
         $reset = $this->resetMapper->findByToken($token);
 
         if (!$reset || new DateTime() > new DateTime($reset['expires_at'])) {
-            return ResetPasswordResponse::unauthorized("Token is invalid or expired.");
+            throw ResetPasswordException::tokenExpired();
         }
 
         $hashed = password_hash($newPassword, PASSWORD_BCRYPT);

@@ -2,29 +2,20 @@
 namespace App\Modules\ForgotPassword\Controllers;
 
 
-use App\Core\Http\Request;
 use App\Modules\ForgotPassword\Request\ResetPasswordRequest;
-use App\Modules\ForgotPassword\Services\ResetPasswordService;
-use App\Modules\ForgotPassword\Response\ResetPasswordResponse;
+use App\Modules\ForgotPassword\UseCases\ResetUseCase;
 
 class ResetPasswordController {
-    private ResetPasswordService $service;
 
-    public function __construct(ResetPasswordService $service) {
-        $this->service = $service;
+    private ResetUseCase $resetUseCase;
+
+    public function __construct(ResetUseCase $resetUseCase) {
+        $this->resetUseCase = $resetUseCase;
     }
 
-    public function handleRequest() {
+    public function handleRequest($data) {
 
-        $request = new ResetPasswordRequest();
+        $this->resetUseCase->execute(new ResetPasswordRequest($data['token'], $data['new_password']));
 
-        $token = trim(($request->getToken()) ?? '');
-        $newPassword = trim(($request->getNewPassword()) ?? '');
-
-        if (!$token || !$newPassword) {
-            return ResetPasswordResponse::inputRequired("Token and new password are required.");
-        }
-
-        $this->service->resetPassword($token, $newPassword);
     }
 }

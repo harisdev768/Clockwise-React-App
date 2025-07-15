@@ -19,40 +19,4 @@ class ForgotPasswordResponse
         ], $statusCode);
     }
 
-    public static function error(string $message = 'An error occurred', int $statusCode = 400): void
-    {
-        self::json([
-            'success' => false,
-            'message' => $message,
-        ], $statusCode);
-    }
-
-    public static function unauthorized(string $message = 'Unauthorized'): void
-    {
-        self::json([
-            'success' => false,
-            'message' => $message,
-        ], 401);
-    }
-
-    public static function notFound(string $message = 'Not found'): void
-    {
-        self::json([
-            'success' => false,
-            'message' => $message,
-        ], 404);
-
-
-
-    }
-
-    public static function invalidEmail(string $message = 'If your email is registered, you will receive a reset link.'): void
-    {
-        self::json([
-            'success' => true,
-            'message' => $message,
-        ], 404);
-
-    }
-
 }

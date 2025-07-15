@@ -10,9 +10,7 @@ class JWTController {
         $this->useCase = $useCase;
     }
 
-    public function authenticate(){
-        $token = $_COOKIE['jwt'] ?? null;
-
+    public function authenticate(string $token){
 
         $this->useCase->verify($token);
 

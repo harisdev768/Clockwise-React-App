@@ -3,6 +3,7 @@
 
 namespace App\Modules\ForgotPassword\Services;
 
+use App\Modules\ForgotPassword\Exceptions\ForgotPasswordException;
 use App\Modules\ForgotPassword\Response\ForgotPasswordResponse;
 use App\Modules\Login\Models\Mappers\UserMapper;
 use App\Modules\ForgotPassword\Mappers\PasswordResetMapper;
@@ -26,7 +27,7 @@ class ForgotPasswordService {
         $user = $this->userMapper->findByEmail($email);
 
         if (!$user) {
-            return ForgotPasswordResponse::invalidEmail("If your email is registered, you will receive a reset link.");
+            throw ForgotPasswordException::invalidEmail();
         }
 
         $token = bin2hex(random_bytes(32));

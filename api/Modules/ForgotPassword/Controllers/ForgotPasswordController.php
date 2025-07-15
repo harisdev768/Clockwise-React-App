@@ -4,26 +4,20 @@ namespace App\Modules\ForgotPassword\Controllers;
 
 
 use App\Modules\ForgotPassword\Request\ForgotPasswordRequest;
-use App\Modules\ForgotPassword\Services\ForgotPasswordService;
-use App\Modules\ForgotPassword\Response\ForgotPasswordResponse;
+use App\Modules\ForgotPassword\UseCases\ForgotUseCase;
 
 class ForgotPasswordController {
-    private ForgotPasswordService $service;
 
-    public function __construct(ForgotPasswordService $service) {
-        $this->service = $service;
+    private ForgotUseCase $forgotUseCase;
+
+
+    public function __construct(ForgotUseCase $forgotUseCase) {
+        $this->forgotUseCase = $forgotUseCase;
     }
 
-    public function handleRequest() {
+    public function handleRequest($data) {
 
-        $request = new ForgotPasswordRequest();
+        $this->forgotUseCase->execute(new ForgotPasswordRequest($data['email']));
 
-        $email = trim(($request->getEmail()) ?? '');
-
-        if (empty($email)) {
-            return ForgotPasswordResponse::unauthorized("Email is required.");
-        }
-
-        $this->service->sendResetEmail($email);
     }
 }

@@ -3,7 +3,7 @@ namespace App\Modules\Login\Exceptions;
 
 use Exception;
 
-class LoginException extends Exception
+class TokenException extends Exception
 {
     protected int $statusCode;
 
@@ -29,17 +29,18 @@ class LoginException extends Exception
 
     // Methods for specific login errors
 
-    public static function missingCredentials(): self
+    public static function missingToken(): self
     {
-        return new self("Email and password are required", 422);
+        return new self("No Token Provided", 422);
+    }
+    public static function invalidToken(): self
+    {
+        return new self("Invalid Token", 422);
     }
 
-    public static function unauthorized(): self
+    public static function tokenExpired(): self
     {
-        return new self("Invalid email or password", 401);
+        return new self("Token has expired", 401);
     }
 
-    public static function notFound(): self{
-        return new self("User Object Not Found", 404);
-    }
 }

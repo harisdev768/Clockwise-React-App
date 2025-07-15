@@ -4,20 +4,29 @@
 
 use App\Config\Container;
 use App\Core\Http\Response;
+use App\Modules\ForgotPassword\Exceptions\ForgotPasswordException;
+use App\Modules\ForgotPassword\Exceptions\ResetPasswordException;
 use App\Modules\Login\Factories\LoginFactory;
 use App\Modules\Login\Factories\JWTFactory;
 use App\Modules\ForgotPassword\Factories\ForgotPasswordFactory;
 use App\Modules\ForgotPassword\Factories\ResetPasswordFactory;
+use App\Modules\Login\Requests\CookieRequest;
+use App\Modules\Login\Response\LoginResponse;
 use App\Modules\Login\Services\JWTService;
 use App\Modules\Login\Models\Mappers\UserMapper;
 use App\Modules\Login\Models\Mappers\UserTokenMapper;
 
 // Requests
-use App\Modules\Login\Requests\LoginRequest;
 use App\Core\Http\Request;
+use App\Modules\Login\Requests\LoginRequest;
+use App\Modules\ForgotPassword\Request\ForgotPasswordRequest;
+use App\Modules\ForgotPassword\Request\ResetPasswordRequest;
 
 // Exceptions
 use App\Core\Exceptions\ApiException;
+use App\Modules\Login\Exceptions\LoginException;
+use App\Modules\Login\Exceptions\TokenException;
+
 
 // Container setup
 $container ??= Container::getInstance();
@@ -29,8 +38,15 @@ $container->bind(ResetPasswordFactory::class, fn() => new ResetPasswordFactory($
 $container->bind(JWTFactory::class, fn() => new JWTFactory($container));
 $container->bind(UserMapper::class, fn() => new UserMapper($container->get(PDO::class)));
 $container->bind(UserTokenMapper::class, new UserTokenMapper($container->get(PDO::class)));
-$container->bind(LoginRequest::class, fn() => new Request());
+
 $container->bind(ApiException::class, fn() => new ApiException());
+
+
+$container->bind(LoginRequest::class, fn() => new Request());
+
+$container->bind(CookieRequest::class, fn() => new CookieRequest());
+$container->bind(ForgotPasswordRequest::class, fn() => new ForgotPasswordRequest());
+
 
 // Middleware-style functions
 
@@ -40,11 +56,11 @@ function handleLogin()
     $data = $request->all();
 
     if (empty($data)) {
-        throw new ApiException("User object not found", 404);
+        throw LoginException::notFound();
     }
 
     if (empty($data['email']) || empty($data['password'])) {
-        throw new ApiException("Email and password are required", 422);
+        throw LoginException::missingCredentials();
     }
 
     Container::getInstance()->get(LoginFactory::class)->handleRequest($data);
@@ -58,29 +74,37 @@ function handleLogout()
 
 function handleMe()
 {
-    Container::getInstance()->get(JWTFactory::class)->handleJWT();
+    $token = Container::getInstance()->get(CookieRequest::class)->getCookie();
+
+    if (!$token) {
+        throw TokenException::missingToken();
+    }
+    Container::getInstance()->get(JWTFactory::class)->handleJWT($token);
 }
 
 function handleForgotPassword()
 {
     $request = Container::getInstance()->get(Request::class);
     $data = $request->all();
+    $email = $data['email'];
 
-    if (empty($data['email'])) {
-        throw new ApiException("Email is required", 422);
+    if (empty($email)) {
+        throw ForgotPasswordException::missingEmail();
     }
 
-    Container::getInstance()->get(ForgotPasswordFactory::class)->handler();
+    Container::getInstance()->get(ForgotPasswordFactory::class)->handler($data);
 }
 
 function handleResetPassword()
 {
     $request = Container::getInstance()->get(Request::class);
     $data = $request->all();
+    $token = $data['token'];
+    $newPassword = $data['new_password'];
 
-    if (empty($data['token']) || empty($data['new_password'])) {
-        throw new ApiException("Token and new password are required", 422);
+    if ( empty($token) || empty($newPassword) ) {
+        throw ResetPasswordException::missingCredentials();
     }
 
-    Container::getInstance()->get(ResetPasswordFactory::class)->handler();
+    Container::getInstance()->get(ResetPasswordFactory::class)->handler($data);
 }

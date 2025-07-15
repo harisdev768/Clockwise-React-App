@@ -5,7 +5,6 @@ namespace App\Modules\Login\Factories;
 use App\Config\Container;
 use App\Modules\Login\Controllers\JWTController;
 
-
 class JWTFactory
 {
     private Container $container;
@@ -16,11 +15,9 @@ class JWTFactory
     }
 
 
-    public function handleJWT()
+    public function handleJWT(string $token)
     {
         $controller = $this->container->get(JWTController::class);
-        $controller->authenticate(); //validate call to controller
-
-
+        $controller->authenticate($token); //validate call to controller
     }
 }

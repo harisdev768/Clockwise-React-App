@@ -12,9 +12,9 @@ class ResetPasswordFactory{
         $this->container = $container;
     }
 
-    public function handler()
+    public function handler($data)
     {
         $controller = $this->container->get(ResetPasswordController::class);
-        $controller->handleRequest();
+        $controller->handleRequest($data);
     }
 }

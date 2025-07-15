@@ -1,7 +1,6 @@
 <?php
 namespace App\Modules\Login\Controllers;
 
-use App\Core\Http\Response;
 use App\Modules\Login\UseCases\LoginUseCase;
 use App\Modules\Login\Requests\LoginRequest;
 use App\Modules\Login\Response\LoginResponse;
