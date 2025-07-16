@@ -2,6 +2,7 @@
 namespace App\Modules\Login\UseCases;
 
 
+use App\Modules\Login\Models\User;
 use App\Modules\Login\Requests\LoginRequest;
 use App\Modules\Login\Response\LoginResponse;
 use App\Modules\Login\Services\JWTService;
@@ -24,26 +25,42 @@ class LoginUseCase {
     public function execute(LoginRequest $request): array {
 
 
-        $identifier = $request->getEmail();
-        $password = $request->getPassword();
+        $user = new User();
+        $user->setIdentifier($request->getEmail());
+        $user->setPassword($request->getPassword());
 
-        $user = $this->userService->login($identifier,$password);
+        $user = $this->userService->login($user);
 
-        if ($user) {
+        if ($user->userExist()) {
             $payload = [
                 'name' => $user->getFirstName().' '.$user->getLastName(),
-                'user_id' => $user->getId(),
+                'user_id' => $user->getUserId()->getUserIdVal(),
                 'email' => $user->getEmail(),
                 'role' => $user->getRole()
             ];
 
             $token = $this->jwtService->generateToken($payload);
-            $this->tokenMapper->saveToken($user->getId(), $token);
+            $this->tokenMapper->saveToken($user->getUserID()->getUserIdVal(), $token);
 
-            return LoginResponse::success($user->getId(),"Login successful!" , $token );
+            if( isset($token) ){
+                setcookie(
+                    'jwt',          // Cookie name
+                    $token,                // JWT token
+                    [
+                        'expires' => time() + 3600,       // 1 hour
+                        'path' => '/',
+                        'domain' => 'localhost',   //  'clockwise.local' for index.html
+                        'secure' => false,               // Set to true if using HTTPS
+                        'httponly' => true,
+                        'samesite' => 'Lax',           // or 'None' with secure
+                    ]
+                );
+            }
+
+            return LoginResponse::success($payload,"Login successful!" , $token );
+        }else{
+            throw LoginException::unauthorized();
         }
-
-        throw LoginException::unauthorized();
 
     }
 }

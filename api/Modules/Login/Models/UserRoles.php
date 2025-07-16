@@ -7,9 +7,6 @@ class UserRole {
     private string $roleName;
 
     public function getRoleId(): int {
-
-        //    $userRoles->getRoleId()->getInValue()
-
         return $this->roleId;
     }
     public function setRoleId(int $roleId): void { $this->roleId = $roleId; }

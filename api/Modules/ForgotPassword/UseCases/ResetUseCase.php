@@ -3,6 +3,7 @@ namespace App\Modules\ForgotPassword\UseCases;
 
 use App\Modules\ForgotPassword\Request\ResetPasswordRequest;
 use App\Modules\ForgotPassword\Services\ResetPasswordService;
+use App\Modules\Login\Models\User;
 
 class ResetUseCase
 {
@@ -17,6 +18,7 @@ class ResetUseCase
     {
         $token = $request->getToken();
         $newPassword = $request->getNewPassword();
+
 
         $this->resetPasswordService->resetPassword($token,$newPassword);
     }

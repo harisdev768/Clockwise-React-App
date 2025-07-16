@@ -1,10 +1,14 @@
 <?php
 namespace App\Modules\Login\Models;
 
+use App\Modules\Login\Models\UserID;
+
 class User {
-    private ?int $id = null;
+    private ?UserID $userID = null;
     private string $firstName;
     private string $lastName;
+
+    private string $identifier = '';
     private string $email = '';    // Initialize with an empty string
     private string $password = ''; // Initialize with an empty string
     private string $username = ''; // Initialize with an empty string
@@ -12,8 +16,30 @@ class User {
     private string $createdAt;
     private ?UserRole $role = null;
 
-    public function getId(): ?int { return $this->id; }
-    public function setId(int $id): void { $this->id = $id; }
+
+    public function setIdentifier(string $identifier): void
+    {
+        $this->identifier = $identifier;
+    }
+    public function getIdentifier(): string{
+        return $this->identifier;
+    }
+
+    public function userExist(): bool{
+        if (empty($this->userID) || is_null($this->userID)){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+
+    public function getUserID(): ?UserID{
+        return $this->userID;
+    }
+    public function setUserID(UserID $userID): void{
+        $this->userID = $userID;
+    }
 
     public function getFirstName(): string { return $this->firstName; }
     public function setFirstName(string $firstName): void { $this->firstName = $firstName; }

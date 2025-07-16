@@ -16,6 +16,4 @@ class ForgotPasswordFactory{
         $controller->handleRequest($data);
     }
 
-
-
 }

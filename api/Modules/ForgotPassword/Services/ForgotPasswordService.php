@@ -8,6 +8,7 @@ use App\Modules\ForgotPassword\Response\ForgotPasswordResponse;
 use App\Modules\Login\Models\Mappers\UserMapper;
 use App\Modules\ForgotPassword\Mappers\PasswordResetMapper;
 use App\Modules\ForgotPassword\Utilities\Mailer;
+use App\Modules\Login\Models\User;
 use DateTime;
 
 class ForgotPasswordService {
@@ -21,12 +22,13 @@ class ForgotPasswordService {
         $this->mailer = $mailer;
     }
 
-    public function sendResetEmail(string $email) {
+    public function sendResetEmail(User $userObject) {
 
+        $email = $userObject->getEmail();
 
         $user = $this->userMapper->findByEmail($email);
 
-        if (!$user) {
+        if (!$user->userExist()) {
             throw ForgotPasswordException::invalidEmail();
         }
 

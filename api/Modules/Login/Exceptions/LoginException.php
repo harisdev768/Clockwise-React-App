@@ -39,7 +39,4 @@ class LoginException extends Exception
         return new self("Invalid email or password", 401);
     }
 
-    public static function notFound(): self{
-        return new self("User Object Not Found", 404);
-    }
 }

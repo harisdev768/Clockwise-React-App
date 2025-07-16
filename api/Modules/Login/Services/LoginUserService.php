@@ -3,33 +3,28 @@ namespace App\Modules\Login\Services;
 
 use App\Modules\Login\Models\Mappers\UserMapper;
 use App\Modules\Login\Models\User;
+use App\Modules\Login\Exceptions\LoginException;
 
 class LoginUserService {
+
     private UserMapper $userMapper;
 
     public function __construct(UserMapper $userMapper) {
         $this->userMapper = $userMapper;
     }
 
-    public function login(string $identifier, string $password): ?User {
+    public function login(User $user): ?User {
 
-        $user = $this->userMapper->findByEmail($identifier);
+        $password = $user->getPassword();
+        $identifier = $user->getIdentifier();
 
-        if (!$user) {
-            $user = $this->userMapper->findByUserName($identifier);
+        $userRes = $this->userMapper->findByIdentifier($identifier);
+
+        if (!$userRes->userExist() || !password_verify($password, $userRes->getPassword())) {
+            throw LoginException::unauthorized();
         }
 
-        if (!$user || !password_verify($password, $user->getPassword())) {
-            http_response_code(401);
-            return null;
-        }
-
-
-        if (password_verify($password, $user->getPassword())) {
-            return $user;
-        }
-
-        return null;
+        return $userRes;
     }
 
 

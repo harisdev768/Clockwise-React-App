@@ -2,11 +2,12 @@
 namespace App\Modules\Login\Models\Hydrators;
 
 use App\Modules\Login\Models\User;
+use App\Modules\Login\Models\UserID;
 
 class UserHydrator {
     public static function hydrate(array $row): User {
         $user = new User();
-        $user->setId($row['id']);
+        $user->setUserID(new UserID($row['id']));
         $user->setFirstName($row['first_name']);
         $user->setLastName($row['last_name']);
         $user->setEmail($row['email']);

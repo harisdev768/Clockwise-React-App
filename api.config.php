@@ -56,7 +56,7 @@ function handleLogin()
     $data = $request->all();
 
     if (empty($data)) {
-        throw LoginException::notFound();
+        throw LoginException::unauthorized();
     }
 
     if (empty($data['email']) || empty($data['password'])) {
@@ -68,7 +68,15 @@ function handleLogin()
 
 function handleLogout()
 {
-    setcookie('jwt', '', time() - 3600, '/', '', true, true);
+    setcookie('jwt', '', [
+        'expires' => time() - 3600,  // Expire in the past
+        'path' => '/',
+        'domain' => 'localhost',     // EXACT same as when set
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
     return Response::logout();
 }
 
@@ -76,10 +84,12 @@ function handleMe()
 {
     $token = Container::getInstance()->get(CookieRequest::class)->getCookie();
 
-    if (!$token) {
+    $tokenString = Container::getInstance()->get(CookieRequest::class)->getToken();
+
+    if (!$tokenString) {
         throw TokenException::missingToken();
     }
-    Container::getInstance()->get(JWTFactory::class)->handleJWT($token);
+    Container::getInstance()->get(JWTFactory::class)->handleJWT($tokenString);
 }
 
 function handleForgotPassword()

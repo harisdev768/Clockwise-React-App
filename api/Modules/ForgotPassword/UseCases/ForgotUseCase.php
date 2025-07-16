@@ -1,10 +1,9 @@
 <?php
-// Modules/ForgotPassword/UseCases/ForgotUseCase.php
-
 namespace App\Modules\ForgotPassword\UseCases;
 
 use App\Modules\ForgotPassword\Request\ForgotPasswordRequest;
 use App\Modules\ForgotPassword\Services\ForgotPasswordService;
+use App\Modules\Login\Models\User;
 
 class ForgotUseCase
 {
@@ -17,6 +16,10 @@ class ForgotUseCase
 
     public function execute(ForgotPasswordRequest $request)
     {
-        $this->forgotPasswordService->sendResetEmail($request->getEmail());
+
+        $user = new User();
+        $user->setEmail($request->getEmail());
+
+        $this->forgotPasswordService->sendResetEmail($user);
     }
 }
