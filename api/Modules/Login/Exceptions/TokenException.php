@@ -11,6 +11,7 @@ class TokenException extends Exception
     {
         parent::__construct($message);
         $this->statusCode = $statusCode;
+        http_response_code($this->statusCode);
     }
 
     public function getStatusCode(): int

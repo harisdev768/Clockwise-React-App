@@ -22,46 +22,49 @@ class LoginUseCase {
         $this->tokenMapper = $tokenMapper;
     }
 
-    public function execute(LoginRequest $request): array {
+    public static function setCookie($token)
+    {
+        if(isset($token)){
+            setcookie(
+                'jwt',          // Cookie name
+                $token,                // JWT token
+                [
+                    'expires' => time() + 3600,       // 1 hour
+                    'path' => '/',
+                    'domain' => 'localhost',   //  'clockwise.local' for index.html
+                    'secure' => false,               // Set to true if using HTTPS
+                    'httponly' => true,
+                    'samesite' => 'Lax',           // or 'None' with secure
+                ]
+            );
+        }
+    }
 
+    public function execute(LoginRequest $request): LoginResponse {
 
         $user = new User();
         $user->setIdentifier($request->getEmail());
         $user->setPassword($request->getPassword());
-
         $user = $this->userService->login($user);
 
-        if ($user->userExist()) {
+        if ($user->userExists()) {
             $payload = [
                 'name' => $user->getFirstName().' '.$user->getLastName(),
                 'user_id' => $user->getUserId()->getUserIdVal(),
                 'email' => $user->getEmail(),
-                'role' => $user->getRole()
+                'role' => $user->getRole()->getRoleName(),
             ];
 
             $token = $this->jwtService->generateToken($payload);
             $this->tokenMapper->saveToken($user->getUserID()->getUserIdVal(), $token);
-
-            
-
-            if( isset($token) ){
-                setcookie(
-                    'jwt',          // Cookie name
-                    $token,                // JWT token
-                    [
-                        'expires' => time() + 3600,       // 1 hour
-                        'path' => '/',
-                        'domain' => 'localhost',   //  'clockwise.local' for index.html
-                        'secure' => false,               // Set to true if using HTTPS
-                        'httponly' => true,
-                        'samesite' => 'Lax',           // or 'None' with secure
-                    ]
-                );
-            }
+            self::setCookie($token);
 
             return LoginResponse::success($payload,"Login successful!" , $token );
-        }else{
+
+        } else {
+
             throw LoginException::unauthorized();
+
         }
 
     }

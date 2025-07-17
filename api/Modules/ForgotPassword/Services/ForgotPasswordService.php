@@ -26,9 +26,9 @@ class ForgotPasswordService {
 
         $email = $userObject->getEmail();
 
-        $user = $this->userMapper->findByEmail($email);
+        $user = $this->userMapper->findByEmail($userObject);
 
-        if (!$user->userExist()) {
+        if (!$user->userExists()) {
             throw ForgotPasswordException::invalidEmail();
         }
 

@@ -11,6 +11,7 @@ class LoginException extends Exception
     {
         parent::__construct($message);
         $this->statusCode = $statusCode;
+        http_response_code($this->statusCode);
     }
 
     public function getStatusCode(): int
@@ -38,5 +39,6 @@ class LoginException extends Exception
     {
         return new self("Invalid email or password", 401);
     }
+
 
 }

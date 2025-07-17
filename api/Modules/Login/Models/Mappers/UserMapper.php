@@ -12,29 +12,29 @@ class UserMapper {
     public function __construct(\PDO $pdo) {
         $this->pdo = $pdo;
     }
-    public function findByIdentifier(string $identifier): ?User {
+    public function findByIdentifier(User $user): ?User {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = ? OR username = ?");
-        $stmt->execute([$identifier, $identifier]);
+        $stmt->execute([$user->getIdentifier(), $user->getIdentifier()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return UserHydrator::hydrate($row);
+        return $row ? UserHydrator::hydrate($row) : $user ;
+
     }
 
 
-    public function findByEmail(string $email): ?User {
+    public function findByEmail(User $user): ?User {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$email]);
+        $stmt->execute([$user->getEmail()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return UserHydrator::hydrate($row);
-
-        //return UserHydrator::hydrate($row);
+        return $row ? UserHydrator::hydrate($row) : $user ;
 
     }
-    public function findByUserName(string $username): ?User {
+    public function findByUserName(User $user): ?User {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->execute([$username]);
+        $stmt->execute([$user->getUsername()]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return UserHydrator::hydrate($row);
+        return $row ? UserHydrator::hydrate($row) : $user ;
+
     }
     public function updatePasswordByEmail(string $email, string $hashedPassword): void {
         $stmt = $this->pdo->prepare("UPDATE users SET password_hash = ? WHERE email = ?");

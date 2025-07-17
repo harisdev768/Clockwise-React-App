@@ -68,9 +68,6 @@ function handleLogin()
 
 function handleLogout()
 {
-//    http_response_code(401);
-
-
     setcookie('jwt', '', [
         'expires' => time() - 3600,  // Expire in the past
         'path' => '/',
@@ -87,7 +84,7 @@ function handleMe()
 {
     $token = Container::getInstance()->get(CookieRequest::class)->getCookie();
 
-    $tokenString = Container::getInstance()->get(CookieRequest::class)->getToken();
+    $tokenString = Container::getInstance()->get(CookieRequest::class)->getCookie();
 
     if (!$tokenString) {
         throw TokenException::missingToken();

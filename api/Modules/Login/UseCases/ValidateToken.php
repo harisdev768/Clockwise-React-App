@@ -18,7 +18,6 @@ class ValidateToken{
         if ($decoded) {
             return Response::success($decoded, 'Authenticated');
         } else {
-            //return Response::unauthorized('Invalid token');
             throw TokenException::invalidToken();
         }
     }

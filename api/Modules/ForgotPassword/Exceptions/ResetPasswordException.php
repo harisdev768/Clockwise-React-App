@@ -2,6 +2,7 @@
 namespace App\Modules\ForgotPassword\Exceptions;
 
 use Exception;
+use http\Client\Curl\User;
 
 class ResetPasswordException extends Exception
 {
@@ -11,6 +12,7 @@ class ResetPasswordException extends Exception
     {
         parent::__construct($message);
         $this->statusCode = $statusCode;
+        http_response_code($this->statusCode);
     }
 
     public function getStatusCode(): int

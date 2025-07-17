@@ -15,16 +15,15 @@ class LoginUserService {
 
     public function login(User $user): ?User {
 
-        $password = $user->getPassword();
-        $identifier = $user->getIdentifier();
 
-        $userRes = $this->userMapper->findByIdentifier($identifier);
+        $userRes = $this->userMapper->findByIdentifier($user);
 
-        if (!$userRes->userExist() || !password_verify($password, $userRes->getPassword())) {
+        if (!$userRes->userExists() || !password_verify($user->getPassword(), $userRes->getPassword())) {
             throw LoginException::unauthorized();
         }
 
         return $userRes;
+
     }
 
 
