@@ -42,6 +42,8 @@ class LoginUseCase {
             $token = $this->jwtService->generateToken($payload);
             $this->tokenMapper->saveToken($user->getUserID()->getUserIdVal(), $token);
 
+            
+
             if( isset($token) ){
                 setcookie(
                     'jwt',          // Cookie name

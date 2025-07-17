@@ -68,6 +68,9 @@ function handleLogin()
 
 function handleLogout()
 {
+//    http_response_code(401);
+
+
     setcookie('jwt', '', [
         'expires' => time() - 3600,  // Expire in the past
         'path' => '/',
@@ -77,7 +80,7 @@ function handleLogout()
         'samesite' => 'Lax',
     ]);
 
-    return Response::logout();
+    return Response::logout($_COOKIE);
 }
 
 function handleMe()

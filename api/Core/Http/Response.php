@@ -44,7 +44,7 @@ class Response
         ], 404);
     }
 
-    public static function logout(string $message = 'Logged out'): void
+    public static function logout($message = 'Logged out'): void
     {
         self::json([
             'success' => true,
