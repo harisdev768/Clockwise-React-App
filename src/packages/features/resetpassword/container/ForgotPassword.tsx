@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './styles/ForgotPassword.css'; // Assuming you have a CSS file for styling
+import "../../resetpassword/styles/ForgotPassword.css"; // Reusing styles
 import { useNavigate } from "react-router-dom";
 import { SCREENS } from "../../screens";
 

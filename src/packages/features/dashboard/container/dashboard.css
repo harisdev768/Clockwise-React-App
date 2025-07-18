@@ -1,3 +1,8 @@
+.h-logo{
+  height: 70px;
+}
+
+
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
@@ -20,16 +25,13 @@
   margin-bottom: 10px;
   font-size: 20px;
 }
-.dashboard-nav button:hover {
+.dashboard-nav a:hover {
   color: #68df6c;
 }
-.dashboard-nav button {
-    margin-right: 18px;
+.dashboard-nav a {
+   
 }
 
-.logo {
-  height: 60px;
-}
 
 .dashboard-nav {
   display: flex;
@@ -38,12 +40,14 @@
   margin-left: auto;
 }
 
-.dashboard-nav button {
+.dashboard-nav a {
   background: transparent;
   border: none;
-  color: white;
   font-weight: bold;
   cursor: pointer;
+  margin-right: 18px;
+  color: #fff;
+  text-decoration: none ;
 }
 
 .dashboard-content {

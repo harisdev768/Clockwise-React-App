@@ -8,6 +8,7 @@ import { fetchCurrentUser } from "./packages/features/redux/actions/auth.ts";
 import ResetPassword from './packages/features/resetpassword/container/ResetPassword.tsx';
 import ForgotPassword from './packages/features/resetpassword/container/ForgotPassword';
 import VerifyStatus from "./packages/features/dashboard/container/test.tsx";
+import Staff from "./packages/features/staff/container/staff.tsx";
 
 
 
@@ -27,6 +28,8 @@ const AppRoutes = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/test" element={<VerifyStatus />} />
+        <Route path="/staff" element={<Staff />} />
+        {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>
   );

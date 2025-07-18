@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import './styles/ResetPassword.css'; // Assuming you have a CSS file for styling
+import '../../resetpassword/styles/ResetPassword.css'
 import { useNavigate } from "react-router-dom";
 import { SCREENS } from "../../screens";
 

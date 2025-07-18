@@ -1,14 +1,29 @@
-// Imports
 import styles from "../styles/LoginScreen.module.css";
 import useLoginScreen from "../hooks/useLogin";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import apiClient from "../../authClient";
 
-// Main Function
 export default function Login() {
   const { setEmail, setPassword, handleLogin, handleNavigate } = useLoginScreen();
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const token = localStorage.getItem("accessToken");
-  if (!token) {
+  useEffect(() => {
+    // Make a call to /me to check if JWT cookie is valid
+    apiClient.get("/me", { withCredentials: true })
+      .then((res) => {
+        if (res.data?.success) {
+          handleNavigate(); // Redirect to dashboard
+        } else {
+          setCheckingAuth(false); // Show login screen
+        }
+      })
+      .catch(() => {
+        setCheckingAuth(false); // Cookie invalid or expired
+      });
+  }, [handleNavigate]);
+
+  if (checkingAuth) return null; // Optional: show loader here
+
   return (
     <div className={styles.container}>
       <div className={styles.loginBox}>
@@ -18,7 +33,7 @@ export default function Login() {
 
         <form onSubmit={handleLogin} className={styles.form}>
           <div className={styles.inputGroup}>
-            <i className="fa-regular fa-envelope"> </i>
+            <i className="fa-regular fa-envelope"></i>
             <input
               type="text"
               name="email"
@@ -30,7 +45,7 @@ export default function Login() {
           </div>
 
           <div className={styles.inputGroup}>
-            <i className="fa-solid fa-lock"> </i>
+            <i className="fa-solid fa-lock"></i>
             <input
               type="password"
               name="password"
@@ -42,13 +57,9 @@ export default function Login() {
           </div>
 
           <input type="submit" value="Log in" className={styles.loginBtn} />
-          
-          <a className={styles.forgetBtn} href="/forgot-password" >Forget Password?</a>
 
-          
+          <a className={styles.forgetBtn} href="/forgot-password">Forget Password?</a>
         </form>
-
-        {/* <a href="#" className={styles.forgotLink}>Forgot Password?</a> */}
       </div>
 
       <footer className={styles.footer}>
@@ -61,15 +72,4 @@ export default function Login() {
       </footer>
     </div>
   );
-} else { 
-  useEffect(() => {
-    // Redirect to Dashboard if already logged in  
-  handleNavigate();
-  }, [handleNavigate]);
-  return (
-<>
-<button className={styles.forgetBtn} onClick={handleNavigate}>
-  </button>
-</>  );
-}
 }
