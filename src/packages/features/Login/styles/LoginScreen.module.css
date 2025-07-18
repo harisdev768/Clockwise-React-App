@@ -1,0 +1,131 @@
+body{
+  background: #f2f2f2;
+  font-family: sans-serif;
+}
+body *{
+  font-family: sans-serif;
+  transition: .3s all;
+}
+a:hover {
+  color:#05384e;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+i{
+  color: #777;
+  margin-right:5px ;
+}
+.loginBox {
+  width:300px;
+  background: white;
+  padding: 40px 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: center;
+  border: 1px solid var(--light-grey-stroke);
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.logo img {
+  width: 90%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  background: #fff;
+}
+
+.icon {
+  margin-right: 8px;
+  color: gray;
+}
+
+.inputGroup input {
+  border: none;
+  outline: none;
+  flex: 1;
+}
+
+.loginBtn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-weight: 400;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: .3s all;
+  
+}
+.loginBtn:hover {
+  background-color: #1e7f23;
+}
+.forgetBtn {
+  background-color: transparent;
+  color: #13AEF2;
+  border: none;
+  border-top: 1px solid #d7d7d7 ;
+  margin-top: 14px;
+  font-weight: 400;
+  padding: 20px 0 0px 0;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+}
+.forgetBtn:hover {
+  color: #05384e;
+}
+.ssoBtn {
+  border: 1px solid #4caf50;
+  color: #4caf50;
+  background: none;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.forgotLink {
+  margin-top: 15px;
+  display: inline-block;
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+  text-align: center;
+  text-decoration: none;
+}
+
+.footer {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #777;
+  text-align: center;
+}
+
+.footer a {
+  margin: 0 4px;
+  color: #007bff;
+  text-decoration: none;
+}
