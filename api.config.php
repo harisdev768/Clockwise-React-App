@@ -1,55 +1,92 @@
 <?php
 
-// MIDDLEWARE / Middleware
-
-use App\Config\Container;
-use App\Core\Http\Response;
-use App\Modules\ForgotPassword\Exceptions\ForgotPasswordException;
-use App\Modules\ForgotPassword\Exceptions\ResetPasswordException;
+// ==============================
+// FACTORIES
+// ==============================
 use App\Modules\Login\Factories\LoginFactory;
-use App\Modules\Login\Factories\JWTFactory;
 use App\Modules\ForgotPassword\Factories\ForgotPasswordFactory;
 use App\Modules\ForgotPassword\Factories\ResetPasswordFactory;
-use App\Modules\Login\Requests\CookieRequest;
+use App\Modules\Login\Factories\JWTFactory;
+use App\Modules\User\Factories\AddUserFactory;
+
+
+// ==============================
+// CONTAINER
+// ==============================
+use App\Config\Container;
+
+
+// ==============================
+// RESPONSE CLASSES
+// ==============================
+use App\Core\Http\Response;
 use App\Modules\Login\Response\LoginResponse;
+
+
+// ==============================
+// SERVICES
+// ==============================
 use App\Modules\Login\Services\JWTService;
+
+
+// ==============================
+// MAPPERS
+// ==============================
 use App\Modules\Login\Models\Mappers\UserMapper;
 use App\Modules\Login\Models\Mappers\UserTokenMapper;
 
-// Requests
+
+// ==============================
+// REQUESTS
+// ==============================
 use App\Core\Http\Request;
 use App\Modules\Login\Requests\LoginRequest;
 use App\Modules\ForgotPassword\Request\ForgotPasswordRequest;
+use App\Modules\Login\Requests\CookieRequest;
 use App\Modules\ForgotPassword\Request\ResetPasswordRequest;
 
-// Exceptions
+
+// ==============================
+// EXCEPTIONS
+// ==============================
+use App\Modules\ForgotPassword\Exceptions\ForgotPasswordException;
+use App\Modules\ForgotPassword\Exceptions\ResetPasswordException;
 use App\Core\Exceptions\ApiException;
 use App\Modules\Login\Exceptions\LoginException;
 use App\Modules\Login\Exceptions\TokenException;
+use App\Modules\User\Exceptions\UserException;
 
 
-// Container setup
+// ==============================
+// CONTAINER SETUP / BINDINGS
+// ==============================
+
+// Get or create singleton container instance
 $container ??= Container::getInstance();
 
+// Services
 $container->bind(JWTService::class, fn() => new JWTService());
+
+// Factories
 $container->bind(LoginFactory::class, fn() => new LoginFactory($container));
 $container->bind(ForgotPasswordFactory::class, fn() => new ForgotPasswordFactory($container));
 $container->bind(ResetPasswordFactory::class, fn() => new ResetPasswordFactory($container));
 $container->bind(JWTFactory::class, fn() => new JWTFactory($container));
+$container->bind(AddUserFactory::class, fn() => new LoginFactory($container));
+
+// Mappers
 $container->bind(UserMapper::class, fn() => new UserMapper($container->get(PDO::class)));
 $container->bind(UserTokenMapper::class, new UserTokenMapper($container->get(PDO::class)));
 
+// Exceptions
 $container->bind(ApiException::class, fn() => new ApiException());
 
-
+// Requests
 $container->bind(LoginRequest::class, fn() => new Request());
-
 $container->bind(CookieRequest::class, fn() => new CookieRequest());
 $container->bind(ForgotPasswordRequest::class, fn() => new ForgotPasswordRequest());
 
-
 // Middleware-style functions
-
 function handleLogin()
 {
     $request = Container::getInstance()->get(Request::class);
@@ -117,4 +154,10 @@ function handleResetPassword()
     }
 
     Container::getInstance()->get(ResetPasswordFactory::class)->handler($data);
+}
+
+function handleAddUser()
+{
+    $controller = AddUserFactory::create();
+    $controller->handle();
 }

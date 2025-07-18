@@ -3,7 +3,6 @@ namespace App\Modules\Login\Factories;
 
 use App\Config\Container;
 use App\Modules\Login\Controllers\LoginController;
-use App\Modules\Login\Requests\LoginRequest;
 
 
 class LoginFactory {

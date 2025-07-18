@@ -1,0 +1,7 @@
+USE clockwise;
+
+CREATE TABLE IF NOT EXISTS departments (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+)
