@@ -1,8 +1,0 @@
-USE clockwise;
-
-CREATE TABLE IF NOT EXISTS user_roles (
-    role_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-    role_name VARCHAR(255) NOT NULL UNIQUE
-) ENGINE=InnoDB 
-  DEFAULT CHARSET=utf8mb4 
-  COLLATE=utf8mb4_general_ci;
