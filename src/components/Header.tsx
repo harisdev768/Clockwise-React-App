@@ -28,7 +28,7 @@ export default function Header({ active = "" }: HeaderProps) {
   return (
     <div className="dashboard-topbar">
       <img
-        src="https://gillanesolutions.net/haris/wp-content/uploads/2025/07/logo-cw.png"
+        src="/logo.png"
         className="h-logo"
         alt="Clockwise Logo"
       />

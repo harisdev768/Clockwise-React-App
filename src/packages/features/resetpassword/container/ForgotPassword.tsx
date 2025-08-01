@@ -3,6 +3,7 @@ import axios from 'axios';
 import "../../resetpassword/styles/ForgotPassword.css"; // Reusing styles
 import { useNavigate } from "react-router-dom";
 import { SCREENS } from "../../screens";
+import apiClient from '../../authClient';
 
 
 const ForgotPassword = () => {
@@ -21,27 +22,21 @@ const ForgotPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://clockwise.local/forgot-password", {
-        email
-      },{
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" }
-      });
+      const res = await apiClient.post("/forgot-password", { email });
 
       setStatus('success');
       setMessage(res.data.message || "Reset link sent.");
-      
-      // ✅ Correct usage of setTimeout
+
       setTimeout(() => {
         handleOnReset();
-      }, 3000); // Redirect after 3 seconds
-          
-
+      }, 3000);
+      
     } catch (error: any) {
       setStatus('error');
       setMessage(error?.response?.data?.message || "Error sending reset link.");
     }
   };
+
 
   return (
     <div className="forgot-container">

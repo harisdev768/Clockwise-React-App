@@ -5,6 +5,7 @@ import axios from 'axios';
 import '../../resetpassword/styles/ResetPassword.css'
 import { useNavigate } from "react-router-dom";
 import { SCREENS } from "../../screens";
+import apiClient from '../../authClient';
 
 
 const ResetPassword = () => {
@@ -39,23 +40,17 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await axios.post("http://clockwise.local/reset-password", {
+      const response = await apiClient.post("/reset-password", {
         token,
         new_password: password,
-      }, {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" }
       });
 
       setStatus('success');
       setMessage(response.data.message || "Password reset successful.");
-   
 
-      // ✅ Correct usage of setTimeout
       setTimeout(() => {
         handleOnReset();
-      }, 3000); // Redirect after 3 seconds
-          
+      }, 3000);
 
     } catch (error: any) {
       setStatus('error');

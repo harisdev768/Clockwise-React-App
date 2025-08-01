@@ -28,7 +28,7 @@ export default function Login() {
     <div className={styles.container}>
       <div className={styles.loginBox}>
         <div className={styles.logo}>
-          <img src="https://gillanesolutions.net/haris/wp-content/uploads/2025/07/logo-cw.png" alt="Clockwise Logo" />
+          <img src="/logo.png" alt="Clockwise Logo" />
         </div>
 
         <form onSubmit={handleLogin} className={styles.form}>

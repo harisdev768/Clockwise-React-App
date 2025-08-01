@@ -12,33 +12,19 @@ export const setUser = (userData: User) => {
   };
 };
 
-export const loginUser = async (email: string, password: string) => {
-  try {
-    const response = await apiClient.post("/login", {
-      email,
-      password,
-    },
-   {withCredentials: true});
-
-    const { token } = response.data;
-
-    console.log("✅ Login successful:", response);
-
-    return {
-      type: "LOGIN_USER",
-      payload: {
-        success: response.data.success,
-        name,
-        email,
-        password,
-        token,
-      },
-    };
-  } catch (error) {
-    console.log(error);
-    return { type: "LOGIN_FAIL", payload: "" };
-  }
+export const loginUser = (email, password) => {
+  return async (dispatch) => {
+    try {
+      const res = await apiClient.post("/login", { email, password }, { withCredentials: true });
+      dispatch({ type: "LOGIN_USER", payload: res.data });
+      return { payload: res.data };
+    } catch (err) {
+      dispatch({ type: "LOGIN_FAIL", payload: err });
+      return { payload: { success: false, message: err?.response?.data?.message || "Login failed" } };
+    }
+  };
 };
+
 
 export const fetchCurrentUser = () => {
   return async (dispatch: any) => {

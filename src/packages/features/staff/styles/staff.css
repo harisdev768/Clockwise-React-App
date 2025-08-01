@@ -78,3 +78,38 @@
 .blue-btn:hover {
   background-color: #207acf;
 }
+.form-header {
+    justify-content: space-between;
+}
+.form-header .btn-close {
+    margin: 0;
+}
+
+.custom-toast{
+    width: fit-content;
+    padding: 5px 10px;
+}
+.custom-toast .btn-close{
+  margin: auto 0;
+}
+.toast-wrapper {
+    position: fixed;
+    zIndex: 1055;
+    top: 0;
+    right: 0px;
+    margin: 20px;
+    border: 3px solid #fff;
+    border-radius: 8px;
+}
+.toast-body {
+    font-size: 15px;
+    font-weight: 600 !important;
+}
+
+.modal-wrapper{
+  max-width: 800px;
+}
+.form-area .form-label {
+    padding: 0 5px;
+    margin-top: 20px;
+}

@@ -16,13 +16,14 @@ a:hover {
   align-items: center;
   justify-content: center;
   height: 80vh;
+  margin: 60px 0;
 }
 i{
   color: #777;
   margin-right:5px ;
 }
 .loginBox {
-  width:300px;
+  width:400px;
   background: white;
   padding: 40px 20px;
   border-radius: 6px;
@@ -129,3 +130,7 @@ i{
   color: #007bff;
   text-decoration: none;
 }
+/* 
+.toast-wrapper {
+  width: fit-content;
+} */
