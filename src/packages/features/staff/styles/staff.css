@@ -94,7 +94,7 @@
 }
 .toast-wrapper {
     position: fixed;
-    zIndex: 1055;
+    z-index: 1055;
     top: 0;
     right: 0px;
     margin: 20px;
