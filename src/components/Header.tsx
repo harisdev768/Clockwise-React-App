@@ -28,7 +28,7 @@ export default function Header({ active = "" }: HeaderProps) {
   return (
     <div className="dashboard-topbar">
       <img
-        src="/logo.png"
+        src="/clockwise-inner-logo.png"
         className="h-logo"
         alt="Clockwise Logo"
       />
